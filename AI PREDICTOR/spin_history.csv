@@ -1,0 +1,107 @@
+import tkinter as tk
+import csv
+import os
+
+CSV_FILE = 'spin_history.csv'
+
+# যদি CSV ফাইল না থাকে, তাহলে তৈরি করো
+if not os.path.exists(CSV_FILE):
+    with open(CSV_FILE, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Spin'])  # header
+
+# ফাইলে নতুন spin লিখবে
+def save_spin():
+    spin = entry.get()
+    if not spin.isdigit():
+        result_label.config(text="❌ শুধু সংখ্যা দিন।")
+        return
+
+    with open(CSV_FILE, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([spin])
+
+    entry.delete(0, tk.END)
+    result_label.config(text="✅ Spin সেভ হয়েছে!")
+    update_history()
+
+# স্পিন হিস্টোরি আপডেট করবে
+def update_history():
+    with open(CSV_FILE, mode='r') as file:
+        reader = csv.reader(file)
+        next(reader)  # skip header
+        spins = [row[0] for row in reader]
+
+    history_text.set("Spin History:\n" + ", ".join(spins[-50:]))  # শেষ ৫০টি দেখাও
+
+# GUI তৈরি
+root = tk.Tk()
+root.title("Spin Result Collector")
+
+tk.Label(root, text="🎰 Spin Result দিন (0-36):").pack()
+
+entry = tk.Entry(root)
+entry.pack()
+
+tk.Button(root, text="✅ Save Spin", command=save_spin).pack()
+
+result_label = tk.Label(root, text="")
+result_label.pack()
+
+history_text = tk.StringVar()
+history_label = tk.Label(root, textvariable=history_text, justify="left")
+history_label.pack()
+
+update_history()  # শুরুতেই ইতিহাস দেখাও
+
+root.mainloop()
+14
+6
+20
+24
+22
+10
+23
+17
+23
+17
+9
+22
+24
+21
+2
+14
+0
+9
+21
+32
+21
+5
+12
+11
+1
+32
+28
+19
+3
+15
+28
+2
+4
+29
+7
+4
+13
+24
+16
+11
+20
+19
+2
+24
+29
+7
+36
+9
+27
+7
